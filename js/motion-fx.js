@@ -76,7 +76,16 @@
       );
 
       drawSuccessIcon(active);
+      popStepDot(active);
     };
+  }
+
+  /* נקודת ההתקדמות הפעילה "נוחתת" עם קפיצת spring קלה במקום להופיע קפואה —
+     ה-CSS כבר מרחיב אותה (transition על width), זה רק מוסיף טעם. */
+  function popStepDot(scope) {
+    const dot = scope.querySelector('.step-dots .active');
+    if (!dot) return;
+    animate(dot, { scale: [0.4, 1] }, { type: 'spring', stiffness: 420, damping: 18, delay: 0.1 });
   }
 
   /* -------------------------------------------------------------------- */
