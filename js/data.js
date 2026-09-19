@@ -115,8 +115,24 @@ const ADMIN_KPI = {
   activeStudents: 15,
   workshopsThisMonth: 15, // כ-15 בחודש, גמיש (ראו קובץ הדיסקברי)
   studioCapacityToday: { used: 4, total: 6 }, // 6 אובניים בסך הכל בסטודיו (ראו קובץ 00) — לא 12
-  marketingCost: null, // placeholder — טרם נבנה דוח מפורט (ראו קובץ 04)
 };
+
+/* בסלון גובה 20% מהסכום שנמשך מהארנק על סדנאות שהגיעו דרכם (ראו קובץ
+   הדיסקברי) — "עלות שיווק" נגזרת מהעמלה הזו, לא מספר קבוע/מומצא.
+   מחושבת ב-app.js מתוך state.adminWorkshops (source === 'בסלון'). */
+const BASALON_FEE_RATE = 0.20;
+
+/* --- צד ניהול: מלאי חומרים ---
+   הצורך האמיתי (ראו קובץ הדיסקברי): "המערכת תחשב ותתריע בזמן אמת על
+   כמויות החומרים בסטודיו" — כי תמימה לעיתים מכינה חומר בכמות גבוהה או
+   נמוכה מדי לשיעור. usagePerParticipant הוא אומדן צריכה ליוצר/ת אחד/ת;
+   הצפי בפועל נגזר ב-app.js ממספר המשתתפים בסדנאות הקרובות שכבר נקבעו. */
+const ADMIN_MATERIALS = [
+  { id: 1, name: 'חימר', unit: 'ק"ג', stock: 30, usagePerParticipant: 1.4 },
+  { id: 2, name: 'זיגוג שקוף', unit: 'ליטר', stock: 3.5, usagePerParticipant: 0.12 },
+  { id: 3, name: 'זיגוג מרווה', unit: 'ליטר', stock: 0.8, usagePerParticipant: 0.12 },
+  { id: 4, name: 'זיגוג טורקיז', unit: 'ליטר', stock: 2.2, usagePerParticipant: 0.12 },
+];
 
 /* אין כאן רשימת "ממתין לך עכשיו" נפרדת בכוונה — היא נגזרת ב-app.js מתוך
    ADMIN_STUDENTS ו-state.adminWorkshops, כדי שלא תוכל להתפצל מהמקור האמיתי

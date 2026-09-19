@@ -142,6 +142,7 @@ function onScreenEnter(appId, screenId) {
   if (appId === 'admin' && screenId === 'a-workshops') renderAdminWorkshops();
   if (appId === 'admin' && screenId === 'a-students') renderAdminStudents();
   if (appId === 'admin' && screenId === 'a-receipt') renderReceiptPicker();
+  if (appId === 'admin' && screenId === 'a-inventory') renderInventory();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -416,6 +417,7 @@ $('[data-cancel-first]')?.addEventListener('click', () => {
   state.student.cancelLesson = MY_LESSONS.find(l => l.status === 'upcoming');
   goToScreen('student', 's3', 'forward');
 });
+$('[data-goto-policy]')?.addEventListener('click', () => goToScreen('student', 's7', 'forward'));
 
 function hoursUntil(lesson) {
   const [h, m] = lesson.time.split(':').map(Number);
@@ -545,6 +547,16 @@ function animateKpis() {
   countUp($('#kpi-students'), ADMIN_KPI.activeStudents);
   countUp($('#kpi-workshops'), ADMIN_KPI.workshopsThisMonth);
   countUp($('#kpi-capacity'), ADMIN_KPI.studioCapacityToday.used, { suffix: ` / ${ADMIN_KPI.studioCapacityToday.total}` });
+  countUp($('#kpi-marketing'), getMarketingCost(), { suffix: ' ₪' });
+}
+
+/* עלות השיווק נגזרת מהעמלה האמיתית שבסלון גובה (BASALON_FEE_RATE, ראו
+   data.js) על סך ההכנסה מהסדנאות שמקורן בבסלון — לא מספר שהוקלד ידנית. */
+function getMarketingCost() {
+  const basalonRevenue = state.adminWorkshops
+    .filter(w => w.source === 'בסלון')
+    .reduce((sum, w) => sum + w.amount, 0);
+  return Math.round(basalonRevenue * BASALON_FEE_RATE);
 }
 
 /* "ממתין לך עכשיו" נגזר בזמן אמת מ-ADMIN_STUDENTS ומ-state.adminWorkshops —
@@ -643,6 +655,63 @@ function renderAdminWorkshops() {
       </span>
       <span class="data-row-meta ltr-nums" style="font-weight:600;">${w.amount.toLocaleString('he-IL')} ₪</span>
       <span class="tag ${r.cls}"><i class="ti ${r.icon}"></i> ${r.text}</span>
+    </div>`;
+  }).join('');
+}
+
+/* -------------------------------------------------------------------------- */
+/* ADMIN — Inventory / materials forecast                                    */
+/* -------------------------------------------------------------------------- */
+
+/* רק סדנאות שעוד לא קרו נכנסות לצפי — סדנה שכבר התקיימה כבר צרכה את
+   החומר שלה, היא לא חלק מ"מה שעוד יידרש". */
+function getUpcomingWorkshopParticipants() {
+  return state.adminWorkshops
+    .filter(w => daysBetween(TODAY, w.date) >= 0)
+    .reduce((sum, w) => sum + w.participants, 0);
+}
+
+function getMaterialStatus(material) {
+  const totalParticipants = getUpcomingWorkshopParticipants();
+  const needed = +(totalParticipants * material.usagePerParticipant).toFixed(1);
+  const remaining = +(material.stock - needed).toFixed(1);
+  const margin = needed > 0 ? remaining / needed : 1;
+  let level = 'ok';
+  if (remaining < 0) level = 'short';
+  else if (margin < 0.2) level = 'warning';
+  return { needed, remaining, level };
+}
+
+const MATERIAL_STATUS_LABEL = {
+  ok: { text: 'מספיק לסדנאות הקרובות', cls: 'tag-success' },
+  warning: { text: 'קרוב לאזל', cls: 'tag-warning' },
+  short: { text: 'לא יספיק — צריך להזמין', cls: 'tag-danger' },
+};
+
+function renderInventory() {
+  const wrap = $('#admin-inventory-list');
+  if (!wrap) return;
+  $('#inventory-count').textContent = `· ${ADMIN_MATERIALS.length} חומרים`;
+
+  const statuses = ADMIN_MATERIALS.map(m => ({ m, st: getMaterialStatus(m) }));
+  const shortOnes = statuses.filter(({ st }) => st.level === 'short');
+  const alertEl = $('#inventory-alert');
+  if (alertEl) {
+    alertEl.innerHTML = shortOnes.length
+      ? `<div class="needs-attention-badge"><i class="ti ti-alert-triangle"></i> ${shortOnes.map(({ m }) => m.name).join(', ')} — לא צפוי/ים להספיק לסדנאות הקרובות</div>`
+      : '';
+  }
+
+  wrap.innerHTML = statuses.map(({ m, st }) => {
+    const label = MATERIAL_STATUS_LABEL[st.level];
+    return `
+    <div class="data-row">
+      <span class="data-avatar"><i class="ti ti-flask"></i></span>
+      <span class="data-row-body">
+        <span class="data-row-title">${m.name}</span>
+        <span class="data-row-sub">${m.stock} ${m.unit} במלאי · נדרש ${st.needed} ${m.unit} לסדנאות הקרובות</span>
+      </span>
+      <span class="tag ${label.cls}">${label.text}</span>
     </div>`;
   }).join('');
 }
