@@ -239,6 +239,9 @@ function enterPaymentScreen() {
   $('#pay-summary-when').textContent = `${fmtDate(day.date)} · ${c.time} · ${participantsLabel(c.participants)}`;
   $('#pay-summary-price').textContent = `${workshopPrice(c.participants).toLocaleString('he-IL')} ₪`;
   $('#pay-cancellation-hours').textContent = WORKSHOP.cancellationHours;
+  $('#pay-duration').textContent = WORKSHOP.duration;
+  $('#pay-subtitle').textContent = WORKSHOP.subtitle;
+  $('#pay-location').textContent = WORKSHOP.location;
 
   c.holdRemaining = HOLD_TOTAL_SECONDS;
   c.holdExpired = false;

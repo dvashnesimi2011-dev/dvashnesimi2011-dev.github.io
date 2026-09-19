@@ -75,7 +75,9 @@
             <h1 class="serif">מה תרצו להזמין?</h1>
             <span style="width:40px"></span>
           </div>
+          <div class="step-dots"><span class="active"></span><span></span><span></span></div>
           <div class="screen-body">
+            <p style="color:var(--c-text-soft);font-size:13.5px;margin-bottom:16px;line-height:1.6;">בחרו את החוויה שמתאימה לכם — הזמנה ואישור מיידיים, בלי שיחות טלפון.</p>
             <div class="stagger-in" style="display:flex;flex-direction:column;gap:12px;">
               <button class="select-row" data-activity="workshop">
                 <span class="select-row-icon"><i class="ti ti-flower"></i></span>
@@ -108,6 +110,7 @@
             </div>
           </div>
           <div class="screen-body no-pad-top sheet-rise">
+            <div class="step-dots" style="padding-top:var(--sp-3);"><span></span><span class="active"></span><span></span></div>
             <div class="stepper" style="margin-bottom:20px;">
               <div>
                 <div class="stepper-label">מספר משתתפים</div>
@@ -143,6 +146,7 @@
             <h1 class="serif">תשלום ואישור</h1>
             <span style="width:40px"></span>
           </div>
+          <div class="step-dots"><span></span><span></span><span class="active"></span></div>
           <div class="screen-body no-pad-top">
             <div class="card">
               <div class="select-row-title" id="pay-summary-title" style="font-size:17px;margin-bottom:4px;"></div>
@@ -152,6 +156,11 @@
                 <span style="color:var(--c-text-soft);font-size:14px;">סה״כ לתשלום</span>
                 <span id="pay-summary-price" class="ltr-nums" style="font-weight:700;font-size:22px;"></span>
               </div>
+            </div>
+            <div class="card" style="margin-top:12px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;color:var(--c-text-soft);">
+              <div style="display:flex;align-items:center;gap:8px;"><i class="ti ti-clock" style="color:var(--c-primary);font-size:16px;"></i><span id="pay-duration"></span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><i class="ti ti-flower" style="color:var(--c-primary);font-size:16px;"></i><span id="pay-subtitle"></span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><i class="ti ti-map-pin" style="color:var(--c-primary);font-size:16px;"></i><span id="pay-location"></span></div>
             </div>
             <button class="btn btn-primary btn-block" id="pay-btn" style="margin-top:20px;">מעבר לתשלום מאובטח</button>
             <p style="text-align:center;font-size:12px;color:var(--c-text-faint);margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px;">
@@ -497,7 +506,7 @@
 
 <script src="js/data.js?v=5"></script>
 <script src="js/strata.js?v=1"></script>
-<script src="js/app.js?v=9"></script>
+<script src="js/app.js?v=10"></script>
 <script src="js/guide.js?v=3"></script>
 <script src="js/motion-fx.js?v=7"></script>
 </body>
