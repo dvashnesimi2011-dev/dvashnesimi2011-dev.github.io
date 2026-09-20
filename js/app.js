@@ -541,7 +541,17 @@ $('#admin-view-toggle')?.addEventListener('click', () => {
 /* ADMIN — Dashboard                                                         */
 /* -------------------------------------------------------------------------- */
 
-let kpiAnimated = false;
+/* קלפי ה-KPI הם HTML סטטי (לא נבנים מחדש ב-innerHTML כמו שאר הרשימות),
+   אז אנימציית ה-stagger-in שלהם הייתה רצה פעם אחת בחיים ותו לא —
+   בלי זה, כל חזרה למסך הבית הייתה מרגישה קפואה בהשוואה למסכים האחרים
+   שמתחדשים בכל ביקור. reflow-force מפעיל אותה מחדש בכל כניסה למסך. */
+function replayStaggerIn(el) {
+  if (!el) return;
+  el.classList.remove('stagger-in');
+  void el.offsetWidth;
+  el.classList.add('stagger-in');
+}
+
 function animateKpis() {
   countUp($('#kpi-revenue'), ADMIN_KPI.monthRevenue, { suffix: ' ₪' });
   countUp($('#kpi-students'), ADMIN_KPI.activeStudents);
@@ -550,6 +560,7 @@ function animateKpis() {
   countUp($('#kpi-marketing'), getMarketingCost(), { suffix: ' ₪' });
   renderCapacityDots();
   renderRevenueSplit();
+  replayStaggerIn($('#dashboard-kpi-grid'));
 }
 
 /* ייצוג מוחשי של תפוסת הסטודיו — נקודה לכל אובניים אמיתי (לא רק "4/6"

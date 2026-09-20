@@ -719,9 +719,22 @@ h1, h2, h3, h4, p { margin: 0; }
 .admin-topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: var(--sp-5) var(--sp-6); border-bottom: 1px solid var(--a-border); flex-shrink: 0;
+  position: relative;
+}
+.admin-topbar::after {
+  content: ''; position: absolute; right: var(--sp-6); bottom: -1px; height: 2px; width: 46px;
+  background: linear-gradient(90deg, var(--a-primary), transparent);
 }
 .admin-topbar h1 { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--a-text); }
 .admin-topbar .sub { font-size: 13px; color: var(--a-text-soft); margin-top: 2px; }
+.admin-profile-avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif); font-size: 17px; font-weight: 600;
+  background: linear-gradient(140deg, var(--a-primary), var(--a-primary-dark));
+  color: var(--a-on-primary);
+  box-shadow: 0 3px 10px -2px rgba(168, 90, 52, 0.45);
+}
 .admin-body { padding: var(--sp-6); flex: 1; overflow-y: auto; color: var(--a-text); }
 
 .admin-scope { color: var(--a-text); }
@@ -736,11 +749,20 @@ h1, h2, h3, h4, p { margin: 0; }
 
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-4); margin-bottom: var(--sp-6); }
 .kpi-card {
+  position: relative; overflow: hidden;
   background: var(--a-surface); border: 1px solid var(--a-border); border-radius: var(--r-md);
-  padding: var(--sp-5);
+  padding: var(--sp-5) var(--sp-5) var(--sp-5);
   transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), border-color var(--dur-base);
 }
-.kpi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); border-color: var(--a-border); }
+.kpi-card::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: var(--a-primary); opacity: 0.55;
+  transition: opacity var(--dur-base), height var(--dur-base);
+}
+.kpi-card.kpi-success::before { background: var(--a-success-text); }
+.kpi-card.kpi-warning::before { background: var(--a-warning-text); }
+.kpi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--a-border); }
+.kpi-card:hover::before { opacity: 1; height: 4px; }
 .kpi-label { font-size: 13px; color: var(--a-text-soft); margin-bottom: var(--sp-3); display: flex; align-items: center; gap: 8px; }
 .kpi-label i {
   width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
