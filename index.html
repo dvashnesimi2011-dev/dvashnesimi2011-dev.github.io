@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>הסטודיו של תמימה — דמו אינטראקטיבי</title>
-<link rel="stylesheet" href="css/styles.css?v=14">
+<link rel="stylesheet" href="css/styles.css?v=15">
 </head>
 <body>
 
@@ -295,11 +295,21 @@
             </div>
             <div class="desktop-only">
               <div class="kpi-grid">
-                <div class="kpi-card"><div class="kpi-label"><i class="ti ti-coin"></i> הכנסות החודש</div><div class="kpi-value" id="kpi-revenue">0 ₪</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> +12% מהחודש הקודם</div></div>
+                <div class="kpi-card kpi-success">
+                  <div class="kpi-label"><i class="ti ti-coin"></i> הכנסות החודש</div>
+                  <div class="kpi-value" id="kpi-revenue">0 ₪</div>
+                  <div class="kpi-delta up"><i class="ti ti-trending-up"></i> +12% מהחודש הקודם</div>
+                  <div class="kpi-split" id="kpi-revenue-split"></div>
+                  <div class="kpi-split-label" id="kpi-revenue-split-label"></div>
+                </div>
                 <div class="kpi-card"><div class="kpi-label"><i class="ti ti-users"></i> סטודנטים פעילים</div><div class="kpi-value" id="kpi-students">0</div></div>
                 <div class="kpi-card"><div class="kpi-label"><i class="ti ti-flower"></i> סדנאות החודש</div><div class="kpi-value" id="kpi-workshops">0</div></div>
-                <div class="kpi-card"><div class="kpi-label"><i class="ti ti-armchair"></i> תפוסת אובניים היום</div><div class="kpi-value" id="kpi-capacity">0</div></div>
-                <div class="kpi-card"><div class="kpi-label"><i class="ti ti-speakerphone"></i> עלות שיווק (בסלון)</div><div class="kpi-value" id="kpi-marketing">0 ₪</div><div class="kpi-delta" style="color:var(--a-text-faint);">20% מהכנסות בסלון בסדנאות המוצגות</div></div>
+                <div class="kpi-card">
+                  <div class="kpi-label"><i class="ti ti-armchair"></i> תפוסת אובניים היום</div>
+                  <div class="kpi-value" id="kpi-capacity">0</div>
+                  <div class="wheel-dots stagger-in" id="kpi-capacity-dots"></div>
+                </div>
+                <div class="kpi-card kpi-warning"><div class="kpi-label"><i class="ti ti-speakerphone"></i> עלות שיווק (בסלון)</div><div class="kpi-value" id="kpi-marketing">0 ₪</div><div class="kpi-delta" style="color:var(--a-text-faint);">20% מהכנסות בסלון בסדנאות המוצגות</div></div>
               </div>
               <div class="section-title">ממתין לך עכשיו</div>
               <div class="card" style="padding:0;"><div id="admin-pending-list" class="stagger-in"></div></div>
@@ -584,7 +594,7 @@
 
 <script src="js/data.js?v=7"></script>
 <script src="js/strata.js?v=1"></script>
-<script src="js/app.js?v=12"></script>
+<script src="js/app.js?v=13"></script>
 <script src="js/guide.js?v=4"></script>
 <script src="js/motion-fx.js?v=8"></script>
 </body>

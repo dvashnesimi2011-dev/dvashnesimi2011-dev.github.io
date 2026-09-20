@@ -548,6 +548,32 @@ function animateKpis() {
   countUp($('#kpi-workshops'), ADMIN_KPI.workshopsThisMonth);
   countUp($('#kpi-capacity'), ADMIN_KPI.studioCapacityToday.used, { suffix: ` / ${ADMIN_KPI.studioCapacityToday.total}` });
   countUp($('#kpi-marketing'), getMarketingCost(), { suffix: ' ₪' });
+  renderCapacityDots();
+  renderRevenueSplit();
+}
+
+/* ייצוג מוחשי של תפוסת הסטודיו — נקודה לכל אובניים אמיתי (לא רק "4/6"
+   כטקסט), נגזר מאותו נתון שכבר מוצג ב-KPI עצמו. */
+function renderCapacityDots() {
+  const wrap = $('#kpi-capacity-dots');
+  if (!wrap) return;
+  const { used, total } = ADMIN_KPI.studioCapacityToday;
+  wrap.innerHTML = Array.from({ length: total }, (_, i) =>
+    `<span class="wheel-dot ${i < used ? 'is-used' : ''}"></span>`).join('');
+}
+
+/* פילוח בסלון/ישיר מתחת ל-KPI הראשי — נגזר מ-getWorkshopsSummary()
+   (אותם נתוני state.adminWorkshops שכבר מוצגים במסך הסדנאות), לא גרף
+   היסטוריה מומצא שאין מאחוריו נתון אמיתי. */
+function renderRevenueSplit() {
+  const splitWrap = $('#kpi-revenue-split');
+  const labelWrap = $('#kpi-revenue-split-label');
+  if (!splitWrap || !labelWrap) return;
+  const { total, basalon, direct } = getWorkshopsSummary();
+  if (total <= 0) { splitWrap.innerHTML = ''; labelWrap.textContent = ''; return; }
+  const basalonPct = Math.round((basalon / total) * 100);
+  splitWrap.innerHTML = `<span class="kpi-split-seg" style="width:${basalonPct}%"></span><span class="kpi-split-seg is-direct" style="width:${100 - basalonPct}%"></span>`;
+  labelWrap.textContent = `${basalonPct}% מבסלון · ${100 - basalonPct}% ישיר, מתוך הסדנאות המוצגות`;
 }
 
 /* עלות השיווק נגזרת מהעמלה האמיתית שבסלון גובה (BASALON_FEE_RATE, ראו
