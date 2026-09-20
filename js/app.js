@@ -553,11 +553,16 @@ function replayStaggerIn(el) {
 }
 
 function animateKpis() {
+  const marketingCost = getMarketingCost();
   countUp($('#kpi-revenue'), ADMIN_KPI.monthRevenue, { suffix: ' ₪' });
   countUp($('#kpi-students'), ADMIN_KPI.activeStudents);
   countUp($('#kpi-workshops'), ADMIN_KPI.workshopsThisMonth);
   countUp($('#kpi-capacity'), ADMIN_KPI.studioCapacityToday.used, { suffix: ` / ${ADMIN_KPI.studioCapacityToday.total}` });
-  countUp($('#kpi-marketing'), getMarketingCost(), { suffix: ' ₪' });
+  countUp($('#kpi-marketing'), marketingCost, { suffix: ' ₪' });
+  // תמצית ה-KPI-ים לתצוגת נייד — אותם נתונים, בלי לשכפל את המקור
+  countUp($('#kpi-revenue-m'), ADMIN_KPI.monthRevenue, { suffix: ' ₪' });
+  countUp($('#kpi-capacity-m'), ADMIN_KPI.studioCapacityToday.used, { suffix: `/${ADMIN_KPI.studioCapacityToday.total}` });
+  countUp($('#kpi-marketing-m'), marketingCost, { suffix: ' ₪' });
   renderCapacityDots();
   renderRevenueSplit();
   replayStaggerIn($('#dashboard-kpi-grid'));

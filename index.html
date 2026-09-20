@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>הסטודיו של תמימה — דמו אינטראקטיבי</title>
-<link rel="stylesheet" href="css/styles.css?v=16">
+<link rel="stylesheet" href="css/styles.css?v=19">
 </head>
 <body>
 
@@ -38,16 +38,19 @@
 
     <div class="hub-list">
       <button class="hub-row" data-open="client">
+        <span class="hub-row-icon"><i class="ti ti-flower"></i></span>
         <span class="hub-row-name serif">לקוח/ה</span>
         <span class="hub-row-fact">הזמנת סדנה — שני כלים לכל אחד/ת, 2 עד 6 משתתפים, עם נעילת משבצת בתשלום ואישור אוטומטי בוואטסאפ.</span>
         <span class="hub-row-arrow"><i class="ti ti-arrow-left"></i></span>
       </button>
       <button class="hub-row" data-open="admin">
+        <span class="hub-row-icon"><i class="ti ti-layout-dashboard"></i></span>
         <span class="hub-row-name serif">תמימה</span>
         <span class="hub-row-fact">ניהול הסטודיו — 6 אובניים, כל הסדנאות והשיעורים והקבלות במקום אחד, בלי אישור ידני על כל פרט.</span>
         <span class="hub-row-arrow"><i class="ti ti-arrow-left"></i></span>
       </button>
       <button class="hub-row" data-open="student">
+        <span class="hub-row-icon"><i class="ti ti-school"></i></span>
         <span class="hub-row-name serif">סטודנט/ית</span>
         <span class="hub-row-fact">בלוק של 4 שיעורים שמתחדש כל 28 יום — מעקב היעדרויות, ביטול לפי מדיניות ברורה, וקביעת השלמה.</span>
         <span class="hub-row-arrow"><i class="ti ti-arrow-left"></i></span>
@@ -287,6 +290,11 @@
           <!-- a-dashboard -->
           <section class="screen" data-screen="a-dashboard" style="flex-direction:column;">
             <div class="mobile-only">
+              <div class="kpi-strip-mobile stagger-in">
+                <div class="kpi-mini"><span class="kpi-mini-label">הכנסות החודש</span><span class="kpi-mini-value" id="kpi-revenue-m">0 ₪</span></div>
+                <div class="kpi-mini"><span class="kpi-mini-label">תפוסה היום</span><span class="kpi-mini-value" id="kpi-capacity-m">0</span></div>
+                <div class="kpi-mini"><span class="kpi-mini-label">עלות שיווק</span><span class="kpi-mini-value" id="kpi-marketing-m">0 ₪</span></div>
+              </div>
               <div class="needs-attention-badge"><i class="ti ti-bell"></i> יש לך <span id="needs-attention-count">0</span> פעולות ממתינות</div>
               <div class="section-title" style="margin-top:0;">ממתין לך עכשיו</div>
               <div class="card" style="padding:0;"><div id="admin-pending-list-m" class="stagger-in"></div></div>
@@ -594,7 +602,7 @@
 
 <script src="js/data.js?v=7"></script>
 <script src="js/strata.js?v=1"></script>
-<script src="js/app.js?v=14"></script>
+<script src="js/app.js?v=15"></script>
 <script src="js/guide.js?v=4"></script>
 <script src="js/motion-fx.js?v=8"></script>
 </body>
