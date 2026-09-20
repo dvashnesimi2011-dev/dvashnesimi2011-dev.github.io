@@ -564,7 +564,7 @@ function getMarketingCost() {
    או להמשיך להציג סדנה שכבר הופקה לה קבלה). */
 function getPendingActions() {
   const lessonPayments = ADMIN_STUDENTS.filter(s => s.urgent).map(s => ({
-    type: 'payment', label: 'ממתין/ה לתשלום — בלוק שיעורים', name: s.name, when: '', urgent: true,
+    type: 'payment', label: 'ממתין/ה לתשלום — בלוק שיעורים', name: s.name, when: '', urgent: true, phone: s.phone,
   }));
   const workshopPayments = state.adminWorkshops.filter(w => w.receipt === 'pending').map(w => ({
     type: 'payment', label: 'ממתין לתשלום — סדנה', name: w.name, when: `${fmtDate(w.date)}, ${w.time}`, urgent: true,
@@ -597,6 +597,7 @@ function renderAdminHome() {
           <span class="data-row-title">${p.label}</span>
           <span class="data-row-sub">${p.name}${p.when ? ' · ' + p.when : ''}</span>
         </span>
+        ${p.phone ? `<a class="icon-btn" href="tel:${p.phone}" aria-label="התקשרות ל${p.name}" style="width:34px;height:34px;font-size:15px;"><i class="ti ti-phone"></i></a>` : ''}
         ${p.urgent ? '<span class="tag tag-warning">דחוף</span>' : ''}
       </div>`).join('');
   const pendingWrap = $('#admin-pending-list');
@@ -640,18 +641,35 @@ const RECEIPT_LABEL = {
   done: { text: 'קבלה הופקה', cls: 'tag-success', icon: 'ti-check' },
 };
 
+/* מציג מאיפה בפועל מגיעה ההכנסה — לא רק "סך הכל", כי בסלון וישיר (ווצאפ/
+   אינסטגרם) מתנהגים אחרת לגמרי (עמלת 20% מול כלום, אישור אוטומטי מול
+   ידני) והפער הזה הוא בדיוק הסיפור העסקי שהמערכת אמורה לשקף. */
+function getWorkshopsSummary() {
+  const total = state.adminWorkshops.reduce((sum, w) => sum + w.amount, 0);
+  const basalon = state.adminWorkshops.filter(w => w.source === 'בסלון').reduce((sum, w) => sum + w.amount, 0);
+  return { total, basalon, direct: total - basalon };
+}
+
 function renderAdminWorkshops() {
   const wrap = $('#admin-workshops-list');
   $('#workshops-count').textContent = `· ${state.adminWorkshops.length} סה״כ`;
+
+  const summary = getWorkshopsSummary();
+  const totalEl = $('#wk-total-revenue'); if (totalEl) totalEl.textContent = `${summary.total.toLocaleString('he-IL')} ₪`;
+  const basalonEl = $('#wk-basalon-revenue'); if (basalonEl) basalonEl.textContent = `${summary.basalon.toLocaleString('he-IL')} ₪`;
+  const directEl = $('#wk-direct-revenue'); if (directEl) directEl.textContent = `${summary.direct.toLocaleString('he-IL')} ₪`;
+
+  const clay = ADMIN_MATERIALS.find(m => m.name === 'חימר');
   const sorted = [...state.adminWorkshops].sort((a, b) => b.date - a.date);
   wrap.innerHTML = sorted.map(w => {
     const r = RECEIPT_LABEL[w.receipt];
+    const clayEst = +(w.participants * clay.usagePerParticipant).toFixed(1);
     return `
     <div class="data-row">
       <span class="data-avatar"><i class="ti ti-users"></i></span>
       <span class="data-row-body">
         <span class="data-row-title">${w.name}</span>
-        <span class="data-row-sub">${fmtDate(w.date)} · ${w.time} · ${participantsLabel(w.participants)} · ${w.source}</span>
+        <span class="data-row-sub">${fmtDate(w.date)} · ${w.time} · ${participantsLabel(w.participants)} · ${w.source} · חימר משוער ${clayEst} ק"ג</span>
       </span>
       <span class="data-row-meta ltr-nums" style="font-weight:600;">${w.amount.toLocaleString('he-IL')} ₪</span>
       <span class="tag ${r.cls}"><i class="ti ${r.icon}"></i> ${r.text}</span>
@@ -712,6 +730,45 @@ function renderInventory() {
         <span class="data-row-sub">${m.stock} ${m.unit} במלאי · נדרש ${st.needed} ${m.unit} לסדנאות הקרובות</span>
       </span>
       <span class="tag ${label.cls}">${label.text}</span>
+    </div>`;
+  }).join('');
+
+  renderInventoryHistory();
+}
+
+/* היסטוריית המלאי משלבת שני כיוונים: צריכה — נגזרת אוטומטית מסדנאות
+   שכבר התקיימו (state.adminWorkshops בעבר × usagePerParticipant של
+   החימר, שמשמש בכל סדנה ללא תלות בבחירת זיגוג) — והזמנות חוזרות
+   שתמימה ביצעה בפועל (ADMIN_RESTOCKS, ראו data.js). שני הצדדים ביחד
+   מסבירים למה המלאי הנוכחי נראה כמו שהוא, לא רק "מספר שהוקלד". */
+function getInventoryHistory() {
+  const clay = ADMIN_MATERIALS.find(m => m.name === 'חימר');
+  const usageEvents = state.adminWorkshops
+    .filter(w => daysBetween(TODAY, w.date) < 0)
+    .map(w => ({
+      date: w.date, materialId: clay.id,
+      delta: -(+(w.participants * clay.usagePerParticipant).toFixed(1)),
+      note: `סדנת ${w.name}`,
+    }));
+  const restockEvents = ADMIN_RESTOCKS.map(r => ({ date: r.date, materialId: r.materialId, delta: r.qty, note: r.note }));
+  return [...usageEvents, ...restockEvents].sort((a, b) => b.date - a.date);
+}
+
+function renderInventoryHistory() {
+  const wrap = $('#inventory-history-list');
+  if (!wrap) return;
+  const history = getInventoryHistory();
+  wrap.innerHTML = history.map(h => {
+    const material = ADMIN_MATERIALS.find(m => m.id === h.materialId);
+    const isGain = h.delta > 0;
+    return `
+    <div class="data-row">
+      <span class="data-avatar"><i class="ti ${isGain ? 'ti-arrow-up' : 'ti-arrow-down'}" style="color:${isGain ? 'var(--a-success-text, var(--c-success-text))' : 'var(--a-text-soft)'};"></i></span>
+      <span class="data-row-body">
+        <span class="data-row-title">${h.note}</span>
+        <span class="data-row-sub">${fmtDate(h.date)} · ${material.name}</span>
+      </span>
+      <span class="data-row-meta ltr-nums" style="font-weight:600;color:${isGain ? 'var(--a-success-text, var(--c-success-text))' : 'var(--a-text)'};">${isGain ? '+' : ''}${h.delta} ${material.unit}</span>
     </div>`;
   }).join('');
 }

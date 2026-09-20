@@ -311,6 +311,11 @@
           <!-- a-workshops -->
           <section class="screen" data-screen="a-workshops" style="flex-direction:column;">
             <div class="section-title" style="margin-top:0;">ניהול סדנאות <span class="count" id="workshops-count"></span></div>
+            <div class="kpi-grid" style="margin-bottom:16px;">
+              <div class="kpi-card"><div class="kpi-label"><i class="ti ti-coin"></i> סה״כ הכנסות מוצגות</div><div class="kpi-value" id="wk-total-revenue" style="font-size:22px;">0 ₪</div></div>
+              <div class="kpi-card"><div class="kpi-label"><i class="ti ti-link"></i> מבסלון</div><div class="kpi-value" id="wk-basalon-revenue" style="font-size:22px;">0 ₪</div></div>
+              <div class="kpi-card"><div class="kpi-label"><i class="ti ti-brand-whatsapp"></i> מוואטסאפ/ישיר</div><div class="kpi-value" id="wk-direct-revenue" style="font-size:22px;">0 ₪</div></div>
+            </div>
             <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
               <span class="tag tag-success"><i class="ti ti-bolt"></i> הופקה אוטומטית</span>
               <span class="tag tag-warning"><i class="ti ti-hand-stop"></i> דורש קבלה ידנית</span>
@@ -347,7 +352,9 @@
               הצפי לכל חומר מחושב בזמן אמת לפי מספר המשתתפים בסדנאות הקרובות שכבר נקבעו — לא הערכה ידנית.
             </p>
             <div id="inventory-alert"></div>
-            <div class="card list-scroll" style="padding:0;max-height:520px;"><div id="admin-inventory-list" class="stagger-in"></div></div>
+            <div class="card list-scroll" style="padding:0;max-height:340px;"><div id="admin-inventory-list" class="stagger-in"></div></div>
+            <div class="section-title">תנועות מלאי אחרונות</div>
+            <div class="card list-scroll" style="padding:0;max-height:280px;"><div id="inventory-history-list" class="stagger-in"></div></div>
           </section>
 
           <!-- a-more -->
@@ -575,9 +582,9 @@
   </div><!-- /.phone-stage -->
 </div>
 
-<script src="js/data.js?v=6"></script>
+<script src="js/data.js?v=7"></script>
 <script src="js/strata.js?v=1"></script>
-<script src="js/app.js?v=11"></script>
+<script src="js/app.js?v=12"></script>
 <script src="js/guide.js?v=4"></script>
 <script src="js/motion-fx.js?v=8"></script>
 </body>
